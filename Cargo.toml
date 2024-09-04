@@ -1,0 +1,11 @@
+[package]
+name = "bibtex-monkey"
+version = "0.1.0"
+authors = ["Yoav Orot"]
+edition = "2021"
+description = "A tool for building BibTeX collections"
+license = "LGPLv3"
+repository = "https://github.com/manzaltu/bibtex-monkey.git"
+readme = "README.md"
+
+[dependencies]
