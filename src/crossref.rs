@@ -1,8 +1,11 @@
+use std::{fs, path::Path};
+
 use anyhow::{anyhow, Result};
 use reqwest::blocking::{Client, Response};
 use serde::Deserialize;
 
 const CROSSREF_WORKS_URL: &str = "https://api.crossref.org/works";
+const CROSSREF_BIBTEX_URL_SUFFIX: &str = "/transform/application/x-bibtex";
 
 #[derive(Deserialize)]
 struct CrossRefResponse {
@@ -51,6 +54,13 @@ impl CrossRef {
         Ok(work)
     }
 
+    pub fn download_work_bibtex<P: AsRef<Path>>(&self, doi: &str, path: P) -> Result<()> {
+        let bibtex_data = self.get_work_bibtex_data(doi)?;
+        fs::write(path, bibtex_data)?;
+
+        Ok(())
+    }
+
     fn query_works_message(
         &self,
         author: &str,
@@ -65,6 +75,13 @@ impl CrossRef {
 
         let CrossRefMessage::WorksMessage(works) = message;
         Ok(works)
+    }
+
+    fn get_work_bibtex_data(&self, doi: &str) -> Result<String> {
+        let url = CROSSREF_WORKS_URL.to_string() + "/" + doi + CROSSREF_BIBTEX_URL_SUFFIX;
+        let response = self.client.get(url).send()?;
+
+        Ok(response.text()?)
     }
 
     fn parse_json_response(response: Response) -> Result<CrossRefMessage> {
@@ -86,6 +103,15 @@ mod tests {
         let crossref = CrossRef::new();
         let work = crossref.query_work("richard feynman", "room at the bottom")?;
         assert_eq!(work.doi, "10.1201/9780429500459-7");
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_get_work_bibtex() -> Result<()> {
+        let crossref = CrossRef::new();
+        let data = crossref.get_work_bibtex_data("10.1201/9780429500459-7")?;
+        assert_eq!(data, " @inbook{Feynman, title={There’s Plenty of Room at the Bottom}, ISBN={9780429500459}, url={http://dx.doi.org/10.1201/9780429500459-7}, DOI={10.1201/9780429500459-7}, booktitle={Feynman and Computation}, publisher={CRC Press}, author={Feynman, Richard}, pages={63–76} }\n");
 
         Ok(())
     }
