@@ -5,7 +5,7 @@ mod record;
 use std::{fs, path::PathBuf};
 
 use anyhow::Result;
-use clap::{Parser, Subcommand};
+use clap::{crate_name, crate_version, Parser, Subcommand};
 use console::{Style, Term};
 use crossref::CrossRef;
 use csv::CsvParser;
@@ -31,6 +31,12 @@ fn main() -> Result<()> {
     let parser: &mut dyn RecordParser = match args.command {
         Commands::Csv { path } => &mut CsvParser::new(path)?,
     };
+
+    println!(
+        "{} {}",
+        Style::new().magenta().bold().apply_to(crate_name!()),
+        crate_version!()
+    );
 
     let cross_ref = CrossRef::new();
 
