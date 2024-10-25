@@ -1,6 +1,7 @@
 mod crossref;
 mod csv;
 mod record;
+mod xlsx;
 
 use std::{fs, path::PathBuf};
 
