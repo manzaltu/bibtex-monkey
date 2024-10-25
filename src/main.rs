@@ -41,6 +41,13 @@ fn main() -> Result<()> {
     let cross_ref = CrossRef::new()?;
 
     fs::create_dir_all(&args.output)?;
+    println!(
+        "Saving to files to {:?}",
+        Style::new()
+            .blue()
+            .bold()
+            .apply_to(fs::canonicalize(&args.output)?),
+    );
 
     let results = parser.parse()?;
     let pb = ProgressBar::new(results.len() as u64);
