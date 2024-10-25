@@ -79,7 +79,18 @@ fn main() -> Result<()> {
                 res.author, res.title
             )));
             pb.set_message(format!("DOI: {}", work.doi));
-            cross_ref.download_work_bibtex(&work.doi, bibtex_path)?;
+            if cross_ref
+                .download_work_bibtex(&work.doi, bibtex_path)
+                .is_err()
+            {
+                pb.println(format!(
+                    "{:>12} {}: {} ({})",
+                    red_bold.apply_to("Failed D/L"),
+                    res.author,
+                    res.title,
+                    work.doi
+                ));
+            }
         } else {
             pb.set_message("Not found");
             pb.println(format!(
