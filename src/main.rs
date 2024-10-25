@@ -38,7 +38,7 @@ fn main() -> Result<()> {
         crate_version!()
     );
 
-    let cross_ref = CrossRef::new();
+    let cross_ref = CrossRef::new()?;
 
     fs::create_dir_all(&args.output)?;
 
