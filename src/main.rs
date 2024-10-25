@@ -65,6 +65,9 @@ fn main() -> Result<()> {
     let green_bold = Style::new().green().bold();
     let red_bold = Style::new().red().bold();
 
+    let mut download_counter = 0;
+    let mut fail_counter = 0;
+
     for res in results {
         pb.println(format!(
             "{:>12} {}: {}",
@@ -83,6 +86,7 @@ fn main() -> Result<()> {
                 .download_work_bibtex(&work.doi, bibtex_path)
                 .is_err()
             {
+                fail_counter += 1;
                 pb.println(format!(
                     "{:>12} {}: {} ({})",
                     red_bold.apply_to("Failed D/L"),
@@ -90,8 +94,11 @@ fn main() -> Result<()> {
                     res.title,
                     work.doi
                 ));
+            } else {
+                download_counter += 1;
             }
         } else {
+            fail_counter += 1;
             pb.set_message("Not found");
             pb.println(format!(
                 "{:>12} {}: {}",
@@ -105,6 +112,12 @@ fn main() -> Result<()> {
     }
 
     pb.finish_and_clear();
+
+    println!(
+        "\n\nDone! Downloaded: {} Failed: {}",
+        green_bold.apply_to(download_counter),
+        red_bold.apply_to(fail_counter)
+    );
 
     Ok(())
 }
