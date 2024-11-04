@@ -73,6 +73,10 @@ fn main() -> Result<()> {
     let mut fail_counter = 0;
 
     for res in results {
+        if res.author.is_empty() || res.title.is_empty() {
+            continue;
+        }
+
         pb.println(format!(
             "{:>12} {}: {}",
             green_bold.apply_to("Searching"),
