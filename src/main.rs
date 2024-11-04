@@ -12,6 +12,7 @@ use crossref::CrossRef;
 use csv::CsvParser;
 use indicatif::{ProgressBar, ProgressStyle};
 use record::RecordParser;
+use xlsx::XlsxParser;
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -24,6 +25,7 @@ struct Args {
 #[derive(Subcommand)]
 enum Commands {
     Csv { path: PathBuf },
+    Xlsx { path: PathBuf, worksheet: String },
 }
 
 fn main() -> Result<()> {
@@ -31,6 +33,7 @@ fn main() -> Result<()> {
 
     let parser: &mut dyn RecordParser = match args.command {
         Commands::Csv { path } => &mut CsvParser::new(path)?,
+        Commands::Xlsx { path, worksheet } => &mut XlsxParser::new(path, &worksheet)?,
     };
 
     println!(

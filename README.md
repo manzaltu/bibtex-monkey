@@ -6,23 +6,33 @@ A tool for building BibTeX collections.<br><br>
 
 ## Description
 
-BibTeX Monkey gets a list of papers in a csv format and produces their respective BibTeX database files (.bib).
+BibTeX Monkey gets a list of papers in either csv or xlsx format and produces their respective BibTeX database files (.bib).
 
-The input csv should have an `Author` and a `Title` columns. For example:
+The input csv or xlsx file should have an `Author` and a `Title` columns. For example, with csv as input:
 ```csv
 Title,Author
 Room at the bottom,Richard Feynman
 What is science?,Richard Feynman
 ```
 
-A csv file can be produce from most spreadsheet editors, such as MS Excel and Google Sheets.
-
 Behind the scenes, BibTeX Monkey uses the free [Crossref](https://www.crossref.org/) service. Please use responsibly.
 
 ## Running
 
+### csv
+
 ```shell
 bibtex-monkey output_dir csv my_resources.csv
+```
+
+A csv file can be produce from most spreadsheet editors, such as MS Excel and Google Sheets.
+
+### xlsx
+
+When using xlsx as input, you should provide the paper list's worksheet name.
+
+```shell
+bibtex-monkey output_dir xlsx my_resources.xlsx Sheet1
 ```
 
 ## LICENSE
